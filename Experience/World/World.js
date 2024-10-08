@@ -1,7 +1,3 @@
-import * as THREE from 'three';
-
-import VertexShader from '../shaders/vertex.glsl'
-import FragmentShader from '../shaders/fragment.glsl'
 import Gesture from "../Utils/GesturePosition.js";
 import Body from "./Body.js";
 

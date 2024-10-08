@@ -7,13 +7,11 @@ export default class GesturePosition {
     results = undefined;
     poseLandmarker = null;
     $video = null;
-    enableWebcamButton = null;
     landmarks = null;
 
     constructor() {
         if (this.hasGetUserMedia()) {
-            this.enableWebcamButton = document.getElementById("btn-start");
-            this.enableWebcamButton.addEventListener("click", this.enableCam.bind(this));
+            window.addEventListener("click", this.enableCam.bind(this));
         } else {
             console.warn("getUserMedia() n'est pas supporté par votre navigateur");
         }
@@ -45,13 +43,7 @@ export default class GesturePosition {
             return;
         }
 
-        if (this.webcamRunning === true) {
-            this.webcamRunning = false;
-            this.enableWebcamButton.innerText = "Activer la détection";
-        } else {
-            this.webcamRunning = true;
-            this.enableWebcamButton.innerText = "Desactiver la détection";
-        }
+        this.webcamRunning = this.webcamRunning !== true;
 
         const constraints = {
             video: true
@@ -75,9 +67,9 @@ export default class GesturePosition {
         if (this.$video.currentTime !== this.lastVideoTime) {
             this.lastVideoTime = this.$video.currentTime;
 
-            if (this.runningMode !== "VIDEO") {
-                this.runningMode = "VIDEO";
-                await this.poseLandmarker.setOptions({ runningMode: "VIDEO" });
+            if (this.runningMode !== "LIVE_STREAM") {
+                this.runningMode = "LIVE_STREAM";
+                await this.poseLandmarker.setOptions({ runningMode: "LIVE_STREAM" });
             }
 
             this.results = await this.poseLandmarker.detectForVideo(this.$video, nowInMs);

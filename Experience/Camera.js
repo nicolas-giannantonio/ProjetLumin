@@ -28,6 +28,7 @@ export default class Camera {
         this.gui.add(this.instance.position, 'x').min(-100).max(100).step(0.01);
         this.gui.add(this.instance.position, 'y').min(-100).max(100).step(0.01);
         this.gui.add(this.instance.position, 'z').min(-50).max(50).step(0.1);
+        this.gui.hide();
     }
 
     setOrbitControls() {
@@ -37,7 +38,6 @@ export default class Camera {
         );
 
         this.controls.enableDamping = true;
-
     }
 
     resize() {
