@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 // CAMERA & ORBIT CONTROLS
 import {OrbitControls} from "three/examples/jsm/controls/OrbitControls.js";
-
+import * as dat from 'dat.gui';
 
 export default class Camera {
     constructor(experience) {
@@ -9,6 +9,7 @@ export default class Camera {
         this.sizes = this.experience.sizes;
         this.scene = this.experience.scene;
         this.canvas = this.experience.canvas;
+        this.gui = new dat.GUI();
 
         this.setInstance();
         this.setOrbitControls();
@@ -22,7 +23,11 @@ export default class Camera {
             100
         );
 
-        this.instance.position.set(0, 0, 3);
+        this.instance.position.set(0, 0, 1.25);
+
+        this.gui.add(this.instance.position, 'x').min(-100).max(100).step(0.01);
+        this.gui.add(this.instance.position, 'y').min(-100).max(100).step(0.01);
+        this.gui.add(this.instance.position, 'z').min(-50).max(50).step(0.1);
     }
 
     setOrbitControls() {

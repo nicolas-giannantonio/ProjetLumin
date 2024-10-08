@@ -12,6 +12,9 @@
     "vite": "^4.4.0"
   },
   "dependencies": {
+    "@mediapipe/tasks-vision": "^0.10.17",
+    "dat.gui": "^0.7.9",
+    "gsap": "^3.12.5",
     "sass": "^1.69.3",
     "scss": "^0.2.4",
     "three": "^0.157.0",

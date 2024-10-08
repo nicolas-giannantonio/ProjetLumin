@@ -2,6 +2,7 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  font-family: "Helvetica Now Display", sans-serif;
 }
 
 #webgl {
@@ -9,4 +10,20 @@
   top: 0;
   width: 100%;
   height: 100%;
+}
+
+#webcam {
+  display: none;
+}
+
+#btn-start {
+  cursor: pointer;
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  padding: .75rem 3rem;
+  border: none;
+  background: white;
+  color: black;
+  z-index: 100;
 }

@@ -2,33 +2,24 @@ import * as THREE from 'three';
 
 import VertexShader from '../shaders/vertex.glsl'
 import FragmentShader from '../shaders/fragment.glsl'
+import Gesture from "../Utils/GesturePosition.js";
+import Body from "./Body.js";
 
 export default class World {
+    frame = 0;
 
     constructor(experience) {
         this.experience = experience;
         this.scene = this.experience.scene;
+        this.gesture = new Gesture();
 
-        //     MESH
-        const geometry = new THREE.BoxGeometry(1, 1, 1);
-
-        const material = new THREE.ShaderMaterial({
-            vertexShader: VertexShader,
-            fragmentShader: FragmentShader,
-            uniforms:
-            {
-                uTime: { value: 0 }
-            },
-
-
-        })
-
-
-        this.mesh = new THREE.Mesh(geometry, material);
-        this.scene.add(this.mesh);
+        this.body = new Body(this.experience);
+        this.body.init();
     }
 
     update() {
-        // this.mesh.rotation.y = Math.cos(this.experience.time.elapsed * 0.001);
+        const gesturePositions = this.gesture.getPositions();
+        this.frame++;
+        this.body.update(gesturePositions, this.frame)
     }
 }
