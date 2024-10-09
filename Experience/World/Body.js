@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import {Lerp, Round} from "../Utils/math.js";
+import {Lerp} from "../Utils/math.js";
 import vertexShader from '../shaders/vertex.glsl';
 import fragmentShader from '../shaders/fragment.glsl';
 
@@ -64,7 +64,7 @@ export default class Body {
             colors[i * 3 + 1] = 1.0;
             colors[i * 3 + 2] = 1.0;
 
-            sizes[i] = 1.0;
+            sizes[i] = .5;
             alphas[i] = 1.0;
         }
 
@@ -89,15 +89,11 @@ export default class Body {
     }
 
     lineInit() {
-        this.lineMaterial = new THREE.LineDashedMaterial({
-            color: "white",
-            transparent: true,
-            opacity: 1.0,
-            depthTest: false,
+        this.lineMaterial = new THREE.LineBasicMaterial({
+            color: 0xffffff,
+            opacity: 1,
             linewidth: 1,
-            linecap: 'round',
-            linejoin:  'round',
-        });
+        })
 
         this.lineGeometry = new THREE.BufferGeometry();
         this.linePositions = new Float32Array(this.CONNECTIONS.length * 6); // (3(xyz)X2) points per line
@@ -107,11 +103,26 @@ export default class Body {
         this.experience.scene.add(this.lines);
     }
 
-    update(gesturePositions, time) {
+    update(gesturePositions) {
         if (gesturePositions && gesturePositions.landmarks && this.active) {
             const landmarks = gesturePositions.landmarks;
             const positions = this.geometry.attributes.position.array;
+            const colors = this.geometry.attributes.aColor.array;
             let index = 0;
+
+            let leftWrist = landmarks[15];
+            let rightWrist = landmarks[16];
+            let head = landmarks[10];
+
+            let distanceBetweenHandsHead = Math.sqrt(
+                Math.pow(leftWrist.x - head.x, 2) + Math.pow(leftWrist.y - head.y, 2)
+            );
+
+            let distanceHandsX = Math.abs(leftWrist.x - rightWrist.x);
+            let distanceHandsY = Math.abs(leftWrist.y - rightWrist.y);
+
+            // console.log(distanceBetweenHandsHead)
+
 
             for (let i = 0; i < this.INCLUDED_INDICES.length; i++) {
                 const originalIndex = this.INCLUDED_INDICES[i];
@@ -120,37 +131,50 @@ export default class Body {
 
                 const targetX = landmark.x * -0.5;
                 const targetY = landmark.y * -0.5 + 0.5;
-                const targetZ = (landmark.z * -0.5) - .5;
+                const targetZ = landmark.z * -0.5;
 
                 const currentX = this.vertices[index * 3];
                 const currentY = this.vertices[index * 3 + 1];
                 const currentZ = this.vertices[index * 3 + 2];
 
-                positions[index * 3] = Round(Lerp(currentX, targetX, 0.1), 3);
-                positions[index * 3 + 1] = Round(Lerp(currentY, targetY, 0.1), 3);
-                positions[index * 3 + 2] = Round(Lerp(currentZ, targetZ, 0.1), 3);
 
-                this.vertices[index * 3] = positions[index * 3];
-                this.vertices[index * 3 + 1] = positions[index * 3 + 1];
-                this.vertices[index * 3 + 2] = 0; // positions[index * 3 + 2] * 0
+                const spacing = 0.15; // Distance entre chaque point
+                const totalPoints = this.INCLUDED_INDICES.length;
+                const totalLength = (totalPoints - 1) * spacing; // Longueur totale, en tenant compte des espaces entre les points
+                const offset = totalLength / 2;
 
-                if(index === 1) {
-                    console.log("Right hand",originalIndex,  positions[index * 3], positions[index * 3 + 1]);
+
+                if (distanceHandsX < .15) {
+                    positions[index * 3] = Lerp(currentX, 0, 0.1);
+                    positions[index * 3 + 1] = Lerp(currentY, 0, 0.1);
+                    positions[index * 3 + 2] = Lerp(currentZ, 0, 0.1) * 0.15;
+                } else if (distanceHandsX > .75) {
+                    positions[index * 3] = Lerp(currentX, (i * spacing) - offset, 0.1);
+                    positions[index * 3 + 1] = Lerp(currentY, 0, 0.1);
+                    positions[index * 3 + 2] = Lerp(currentZ, 0, 0.1) * 0.15;
+                } else if (distanceBetweenHandsHead > .5) {
+                    console.log("Head star")
+                }
+                else {
+                    positions[index * 3] = Lerp(currentX, targetX, 0.1);
+                    positions[index * 3 + 1] = Lerp(currentY, targetY, 0.1);
+                    positions[index * 3 + 2] = Lerp(currentZ, targetZ, 0.1) * 0.15;
                 }
 
+                colors[index * 3] = 1.0;
+                colors[index * 3 + 1] = 1.0;
+                colors[index * 3 + 2] = 1.0;
+
                 index++;
-
-
             }
 
             this.geometry.attributes.position.needsUpdate = true;
+            this.geometry.attributes.aColor.needsUpdate = true;
 
-            // Mettre à jour les lignes
             this.updateLines();
-        } else {
-
         }
     }
+
 
     updateLines() {
         const linePositions = this.lineGeometry.attributes.position.array;
@@ -171,5 +195,14 @@ export default class Body {
         }
 
         this.lineGeometry.attributes.position.needsUpdate = true;
+    }
+
+
+    mooveToCenter() {
+        for (let i = 0; i < this.totalPoints; i++) {
+            this.vertices[i * 3] = 0;
+            this.vertices[i * 3 + 1] = 0;
+            this.vertices[i * 3 + 2] = 0;
+        }
     }
 }
