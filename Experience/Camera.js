@@ -23,7 +23,7 @@ export default class Camera {
             100
         );
 
-        this.instance.position.set(0, 0, 1.25);
+        this.instance.position.set(0, 0, 1);
 
         this.gui.add(this.instance.position, 'x').min(-100).max(100).step(0.01);
         this.gui.add(this.instance.position, 'y').min(-100).max(100).step(0.01);
@@ -32,12 +32,12 @@ export default class Camera {
     }
 
     setOrbitControls() {
-        // this.controls = new OrbitControls(
-        //     this.instance,
-        //     this.canvas
-        // );
+        this.controls = new OrbitControls(
+            this.instance,
+            this.canvas
+        );
 
-        // this.controls.enableDamping = true;
+        this.controls.enableDamping = true;
     }
 
     resize() {
@@ -46,6 +46,6 @@ export default class Camera {
     }
 
     update() {
-        // this.controls.update();
+        this.controls.update();
     }
 }

@@ -8,9 +8,9 @@ void main() {
     vec4 finalColor = vec4(0.);
 
     vec2 echoOffset = vec2(.5) * 0.0015;
-    const int echoLayers = 25;
+    const int echoLayers = 15;
 
-    float attenuation = .85;
+    float attenuation = .75;
 
     for (int i = 1; i <= echoLayers; i++) {
         float layerFactor = float(i);
@@ -21,7 +21,7 @@ void main() {
     }
 
     finalColor /= float(echoLayers);
-    finalColor *= 25. + original * .25;
+    finalColor *= 25. + (original * .25);
 
     gl_FragColor = finalColor;
 }

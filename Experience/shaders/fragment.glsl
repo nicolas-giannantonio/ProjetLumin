@@ -11,8 +11,7 @@ void main() {
     vec3 color = vColor;
     float alpha = vAlpha * (1.0 - smoothFactor);
 
-    color = mix(color, vec3(1.0), smoothFactor);
-
+    color = mix(color, vec3(vUv.x, vUv.y, 1.0), smoothFactor);
 
     gl_FragColor = vec4(color, alpha);
 }

@@ -13,7 +13,7 @@ export default class Renderer {
         this.canvas = this.experience.canvas;
         this.sizes = this.experience.sizes;
         this.scene = this.experience.scene;
-        this.camera = this.experience.camera.instance;  // Utilise this.camera.instance
+        this.camera = this.experience.camera.instance;
 
         this.setInstance();
         this.setPostProcessing();
@@ -37,10 +37,10 @@ export default class Renderer {
         this.composer.addPass(this.renderPass);
 
         const params = {
-            threshold: .25,
-            strength: .25,
-            radius: .15,
-            exposure: .2
+            threshold: .5,
+            strength: .75,
+            radius: 0,
+            exposure: 2
         };
 
         const bloomPass = new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 1.5, 0.4, 0.85);
@@ -48,8 +48,7 @@ export default class Renderer {
         bloomPass.strength = params.strength;
         bloomPass.radius = params.radius;
 
-
-        // this.composer.addPass(bloomPass);
+        this.composer.addPass(bloomPass);
 
         const duplicatePass = new ShaderPass({
             uniforms: {
@@ -65,7 +64,7 @@ export default class Renderer {
             `,
             fragmentShader: DuplicateShader
         });
-        // this.composer.addPass(duplicatePass);
+        this.composer.addPass(duplicatePass);
 
         this.outputPass = new OutputPass();
         this.composer.addPass(this.outputPass);
