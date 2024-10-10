@@ -3,6 +3,7 @@ import {Lerp} from "../Utils/math.js";
 import vertexShader from '../shaders/vertex.glsl';
 import fragmentShader from '../shaders/fragment.glsl';
 import AudioCapture from "./AudioCapture.js";
+import SoundBack from "./SoundBack.js";
 
 export default class Body {
     INCLUDED_INDICES = [0, 12, 11, 14, 18, 13, 19, 23, 24, 26, 25, 30, 29];
@@ -15,10 +16,7 @@ export default class Body {
             this.changeSkeletonColor(color);
         });
 
-        this.sound = new Audio("public/assets/sounds/musique.mp3");
-        this.sound.muted = true;
-        this.sound.loop = true;
-        this.sound.play();
+        this.sound = SoundBack;
 
         this.CONNECTIONS = [
             [0, 12], [0, 11],
@@ -154,9 +152,10 @@ export default class Body {
                 const wristThreshold = 0.85;
 
                 if (wristDistance > wristThreshold) {
+                    console.log('Spread pose detected');
                     this.onSpreadPoseDetected();
                 } else {
-                    this.sound.muted = true;
+                    this.sound.muted(true);
                 }
             }
 
@@ -164,7 +163,7 @@ export default class Body {
     }
 
     onSpreadPoseDetected() {
-        this.sound.muted = false;
+        this.sound.muted(false);
     }
 
     changeSkeletonColor(color) {

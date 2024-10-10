@@ -1,4 +1,5 @@
 import { PoseLandmarker, FilesetResolver } from "@mediapipe/tasks-vision";
+import SoundBack from "../World/SoundBack.js";
 
 export default class GesturePosition {
     runningMode = "LIVE_STREAM";
@@ -10,8 +11,13 @@ export default class GesturePosition {
     landmarks = null;
 
     constructor() {
+        this.sound = SoundBack;
+
         if (this.hasGetUserMedia()) {
-            window.addEventListener("click", this.enableCam.bind(this));
+            window.addEventListener("click", () => {
+                this.enableCam();
+                this.sound.play();
+            });
         } else {
             console.warn("getUserMedia() n'est pas supporté par votre navigateur");
         }

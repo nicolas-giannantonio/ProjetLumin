@@ -1,16 +1,11 @@
-
-
 export default class AudioCapture {
-    clapSoundLimit = 0.1;
+    clapSoundLimit = 0.25;
 
     constructor(onClapCallback) {
         this.previousTime = 0;
         this.onClapCallback = onClapCallback;
         this.initAudio();
-
-
     }
-
 
     initAudio() {
         if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
