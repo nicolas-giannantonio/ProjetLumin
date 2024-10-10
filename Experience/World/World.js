@@ -15,14 +15,22 @@ export default class World {
         this.body.init();
 
         this.floor = new Mesh(
-            new THREE.PlaneGeometry(2, 2),
+            new THREE.PlaneGeometry(2.5, 1.5, 1, 1),
             new THREE.MeshBasicMaterial(
-                {color: "white", side: THREE.DoubleSide, wireframe: true}
+                {
+                    color: "white",
+                    side: THREE.DoubleSide,
+                    opacity: 1,
+                    transparent: true,
+                    wireframe: true
+                }
             )
         )
 
         this.floor.rotation.x = Math.PI / 2;
         this.floor.position.y = -1;
+        this.floor.position.z = -2;
+        this.floor.scale.y = 4.5;
         this.scene.add(this.floor);
     }
 

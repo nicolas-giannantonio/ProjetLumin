@@ -6,7 +6,6 @@ import {OutputPass} from 'three/addons/postprocessing/OutputPass.js';
 import {UnrealBloomPass} from "three/addons/postprocessing/UnrealBloomPass.js";
 import {ShaderPass} from "three/addons/postprocessing/ShaderPass.js";
 import DuplicateShader from './shaders/postprocessing/duplicate.glsl'
-import { SobelOperatorShader } from 'three/addons/shaders/SobelOperatorShader.js';
 
 export default class Renderer {
     constructor(experience) {

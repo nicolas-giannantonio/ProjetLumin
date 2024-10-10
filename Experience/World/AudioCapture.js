@@ -1,4 +1,8 @@
+
+
 export default class AudioCapture {
+    clapSoundLimit = 0.1;
+
     constructor(onClapCallback) {
         this.previousTime = 0;
         this.onClapCallback = onClapCallback;
@@ -39,7 +43,7 @@ export default class AudioCapture {
             const average = sum / this.bufferLength;
             const normalizedAverage = average / 255;
 
-            if (normalizedAverage > 0.225 && (Date.now() - this.previousTime) > 250) {
+            if (normalizedAverage > this.clapSoundLimit && (Date.now() - this.previousTime) > 250) {
                 this.previousTime = Date.now();
                 if (this.onClapCallback) {
                     const color = this.generateRandomColor();

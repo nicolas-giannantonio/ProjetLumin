@@ -139,6 +139,17 @@ export default class Body {
 
     changeSkeletonColor(color) {
         this.color = color;
+
+        if (this.experience.world.floor) {
+            const floorMaterial = this.experience.world.floor.material;
+
+            if (floorMaterial && floorMaterial.color) {
+                floorMaterial.color.setRGB(color.r, color.g, color.b);
+                floorMaterial.needsUpdate = true;
+            }
+        }
+
+        // Mise à jour des couleurs du squelette et des traînées
         const colors = this.geometry.attributes.aColor.array;
         for (let i = 0; i < colors.length; i += 3) {
             colors[i] = color.r;
@@ -146,6 +157,7 @@ export default class Body {
             colors[i + 2] = color.b;
         }
         this.geometry.attributes.aColor.needsUpdate = true;
+
         this.trailMeshes.forEach(trailMesh => {
             const trailColors = trailMesh.geometry.attributes.aColor.array;
             for (let i = 0; i < trailColors.length; i += 3) {
@@ -155,10 +167,12 @@ export default class Body {
             }
             trailMesh.geometry.attributes.aColor.needsUpdate = true;
         });
-        this.lineMaterial.color = new THREE.Color(color.r, color.g, color.b);
+
+        this.lineMaterial.color.setRGB(color.r, color.g, color.b);
         this.lineMaterial.needsUpdate = true;
+
         this.trailLineMeshes.forEach(trailLineMesh => {
-            trailLineMesh.material.color = new THREE.Color(color.r, color.g, color.b);
+            trailLineMesh.material.color.setRGB(color.r, color.g, color.b);
             trailLineMesh.material.needsUpdate = true;
         });
     }
