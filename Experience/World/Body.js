@@ -14,6 +14,12 @@ export default class Body {
         this.audioCapture = new AudioCapture((color) => {
             this.changeSkeletonColor(color);
         });
+
+        this.sound = new Audio("public/assets/sounds/musique.mp3");
+        this.sound.muted = true;
+        this.sound.loop = true;
+        this.sound.play();
+
         this.CONNECTIONS = [
             [0, 12], [0, 11],
             [12, 14], [14, 18],
@@ -99,7 +105,6 @@ export default class Body {
     }
 
     update(gesturePositions, frame) {
-        // this.material.uniforms.uTime.value = frame;
         this.audioCapture.analyseSound();
         if (gesturePositions && gesturePositions.landmarks && this.active) {
             const landmarks = gesturePositions.landmarks;
@@ -112,6 +117,9 @@ export default class Body {
                 this.previousPositions.unshift(Float32Array.from(positions));
                 this.trailUpdateCounter = 0;
             }
+
+            let leftWrist, rightWrist, leftAnkle, rightAnkle;
+
             for (let i = 0; i < this.INCLUDED_INDICES.length; i++) {
                 const originalIndex = this.INCLUDED_INDICES[i];
                 const landmark = landmarks[originalIndex];
@@ -123,18 +131,40 @@ export default class Body {
                 const currentY = positions[index * 3 + 1];
                 const currentZ = positions[index * 3 + 2];
                 positions[index * 3] = Lerp(currentX, targetX, 0.1);
-                positions[index * 3 + 1] = Lerp(currentY, targetY, 0.1) + .05;
+                positions[index * 3 + 1] = Lerp(currentY, targetY, 0.1) + 0.05;
                 positions[index * 3 + 2] = Lerp(currentZ, targetZ, 0.1);
                 colors[index * 3] = this.color.r;
                 colors[index * 3 + 1] = this.color.g;
                 colors[index * 3 + 2] = this.color.b;
+
+                if (originalIndex === 19) leftWrist = { x: targetX, y: targetY };
+                if (originalIndex === 18) rightWrist = { x: targetX, y: targetY };
+                if (originalIndex === 29) leftAnkle = { x: targetX, y: targetY };
+                if (originalIndex === 30) rightAnkle = { x: targetX, y: targetY };
+
                 index++;
             }
             this.geometry.attributes.position.needsUpdate = true;
             this.geometry.attributes.aColor.needsUpdate = true;
             this.updateLines();
             this.updateTrails();
+
+            if (leftWrist && rightWrist && leftAnkle && rightAnkle) {
+                const wristDistance = Math.abs(leftWrist.x - rightWrist.x);
+                const wristThreshold = 0.85;
+
+                if (wristDistance > wristThreshold) {
+                    this.onSpreadPoseDetected();
+                } else {
+                    this.sound.muted = true;
+                }
+            }
+
         }
+    }
+
+    onSpreadPoseDetected() {
+        this.sound.muted = false;
     }
 
     changeSkeletonColor(color) {
@@ -149,7 +179,6 @@ export default class Body {
             }
         }
 
-        // Mise à jour des couleurs du squelette et des traînées
         const colors = this.geometry.attributes.aColor.array;
         for (let i = 0; i < colors.length; i += 3) {
             colors[i] = color.r;

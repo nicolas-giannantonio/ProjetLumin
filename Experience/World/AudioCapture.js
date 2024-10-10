@@ -8,8 +8,7 @@ export default class AudioCapture {
         this.onClapCallback = onClapCallback;
         this.initAudio();
 
-        // this.sound = new Audio('../public/assets/sound.mp3');
-        // this.sound.play();
+
     }
 
 
