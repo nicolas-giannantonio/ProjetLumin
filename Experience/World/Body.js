@@ -87,8 +87,8 @@ export default class Body {
     lineInit() {
         this.lineMaterial = new THREE.LineBasicMaterial({
             color: new THREE.Color(this.color.r, this.color.g, this.color.b),
-            opacity: 0.85,
-            linewidth: 0.05,
+            opacity: 1.0,
+            linewidth: 1.0,
             transparent: true,
         });
         this.lineGeometry = new THREE.BufferGeometry();
@@ -123,8 +123,8 @@ export default class Body {
                 const currentY = positions[index * 3 + 1];
                 const currentZ = positions[index * 3 + 2];
                 positions[index * 3] = Lerp(currentX, targetX, 0.1);
-                positions[index * 3 + 1] = Lerp(currentY, targetY, 0.1) + .1;
-                positions[index * 3 + 2] = Lerp(currentZ, targetZ, 0.1) * .75;
+                positions[index * 3 + 1] = Lerp(currentY, targetY, 0.1) + .05;
+                positions[index * 3 + 2] = Lerp(currentZ, targetZ, 0.1);
                 colors[index * 3] = this.color.r;
                 colors[index * 3 + 1] = this.color.g;
                 colors[index * 3 + 2] = this.color.b;

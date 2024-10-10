@@ -3,11 +3,15 @@ export default class AudioCapture {
         this.previousTime = 0;
         this.onClapCallback = onClapCallback;
         this.initAudio();
+
+        // this.sound = new Audio('../public/assets/sound.mp3');
+        // this.sound.play();
     }
+
 
     initAudio() {
         if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-            navigator.mediaDevices.getUserMedia({ audio: true })
+            navigator.mediaDevices.getUserMedia({audio: true})
                 .then((stream) => {
                     this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
                     const source = this.audioContext.createMediaStreamSource(stream);
@@ -18,7 +22,7 @@ export default class AudioCapture {
                     source.connect(this.analyser);
                 })
                 .catch((err) => {
-                    console.error('Erreur lors de l\'accès au microphone:', err);
+                    console.error("Erreur lors de l'accès au microphone:", err);
                 });
         } else {
             console.error('getUserMedia non supporté dans ce navigateur.');
