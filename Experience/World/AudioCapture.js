@@ -35,7 +35,7 @@ export default class AudioCapture {
             const average = sum / this.bufferLength;
             const normalizedAverage = average / 255;
 
-            if (normalizedAverage > 0.25 && (Date.now() - this.previousTime) > 500) {
+            if (normalizedAverage > 0.225 && (Date.now() - this.previousTime) > 250) {
                 this.previousTime = Date.now();
                 if (this.onClapCallback) {
                     const color = this.generateRandomColor();

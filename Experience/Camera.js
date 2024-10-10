@@ -23,7 +23,7 @@ export default class Camera {
             100
         );
 
-        this.instance.position.set(0, 0, 1);
+        this.instance.position.set(0, 0, 1.75);
 
         this.gui.add(this.instance.position, 'x').min(-100).max(100).step(0.01);
         this.gui.add(this.instance.position, 'y').min(-100).max(100).step(0.01);

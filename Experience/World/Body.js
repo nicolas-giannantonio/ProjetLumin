@@ -1,16 +1,16 @@
 import * as THREE from 'three';
-import { Lerp } from "../Utils/math.js";
+import {Lerp} from "../Utils/math.js";
 import vertexShader from '../shaders/vertex.glsl';
 import fragmentShader from '../shaders/fragment.glsl';
 import AudioCapture from "./AudioCapture.js";
 
 export default class Body {
     INCLUDED_INDICES = [0, 12, 11, 14, 18, 13, 19, 23, 24, 26, 25, 30, 29];
-    TRAIL_LENGTH = 1;
+    TRAIL_LENGTH = 25;
 
     constructor(experience) {
         this.experience = experience;
-        this.color = { r: 1.0, g: 1.0, b: 1.0 };
+        this.color = {r: 1.0, g: 1.0, b: 1.0};
         this.audioCapture = new AudioCapture((color) => {
             this.changeSkeletonColor(color);
         });
@@ -62,7 +62,6 @@ export default class Body {
             depthTest: false,
             transparent: true,
             vertexColors: true,
-            uniforms: { uOpacity: { value: 1.0 } }
         });
         this.points = new THREE.Points(this.geometry, this.material);
         this.experience.scene.add(this.points);
@@ -71,14 +70,14 @@ export default class Body {
         for (let i = 0; i < this.TRAIL_LENGTH; i++) {
             const trailGeometry = this.geometry.clone();
             const trailMaterial = this.material.clone();
-            const opacityFactor = (1 - (i + 1) / (this.TRAIL_LENGTH + 1)) * 0.5;
-            trailMaterial.uniforms.uOpacity.value = opacityFactor;
+            // const opacityFactor = (1 - (i + 1) / (this.TRAIL_LENGTH + 1)) * 0.5;
+            // trailMaterial.uniforms.uOpacity.value = .1;
             const trailPoints = new THREE.Points(trailGeometry, trailMaterial);
             this.experience.scene.add(trailPoints);
             this.trailMeshes.push(trailPoints);
             const trailLineGeometry = this.lineGeometry.clone();
             const trailLineMaterial = this.lineMaterial.clone();
-            trailLineMaterial.opacity = opacityFactor;
+            // trailLineMaterial.opacity = opacityFactor;
             const trailLines = new THREE.LineSegments(trailLineGeometry, trailLineMaterial);
             this.experience.scene.add(trailLines);
             this.trailLineMeshes.push(trailLines);
@@ -99,7 +98,8 @@ export default class Body {
         this.experience.scene.add(this.lines);
     }
 
-    update(gesturePositions) {
+    update(gesturePositions, frame) {
+        // this.material.uniforms.uTime.value = frame;
         this.audioCapture.analyseSound();
         if (gesturePositions && gesturePositions.landmarks && this.active) {
             const landmarks = gesturePositions.landmarks;
@@ -123,8 +123,8 @@ export default class Body {
                 const currentY = positions[index * 3 + 1];
                 const currentZ = positions[index * 3 + 2];
                 positions[index * 3] = Lerp(currentX, targetX, 0.1);
-                positions[index * 3 + 1] = Lerp(currentY, targetY, 0.1);
-                positions[index * 3 + 2] = Lerp(currentZ, targetZ, 0.1);
+                positions[index * 3 + 1] = Lerp(currentY, targetY, 0.1) + .1;
+                positions[index * 3 + 2] = Lerp(currentZ, targetZ, 0.1) * .75;
                 colors[index * 3] = this.color.r;
                 colors[index * 3 + 1] = this.color.g;
                 colors[index * 3 + 2] = this.color.b;

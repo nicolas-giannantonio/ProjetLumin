@@ -6,6 +6,7 @@ import {OutputPass} from 'three/addons/postprocessing/OutputPass.js';
 import {UnrealBloomPass} from "three/addons/postprocessing/UnrealBloomPass.js";
 import {ShaderPass} from "three/addons/postprocessing/ShaderPass.js";
 import DuplicateShader from './shaders/postprocessing/duplicate.glsl'
+import { SobelOperatorShader } from 'three/addons/shaders/SobelOperatorShader.js';
 
 export default class Renderer {
     constructor(experience) {
@@ -37,8 +38,8 @@ export default class Renderer {
         this.composer.addPass(this.renderPass);
 
         const params = {
-            threshold: .5,
-            strength: .75,
+            threshold: .25,
+            strength: .35,
             radius: 0,
             exposure: 2
         };
@@ -47,6 +48,7 @@ export default class Renderer {
         bloomPass.threshold = params.threshold;
         bloomPass.strength = params.strength;
         bloomPass.radius = params.radius;
+
 
         this.composer.addPass(bloomPass);
 
