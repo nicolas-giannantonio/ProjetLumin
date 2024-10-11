@@ -35,7 +35,7 @@ export default class Body {
         this.active = false;
         this.trailMeshes = [];
         this.trailLineMeshes = [];
-        this.trailUpdateFrequency = 1;
+        this.trailUpdateFrequency = 3;
         this.trailUpdateCounter = 0;
     }
 
